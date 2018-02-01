@@ -1,0 +1,58 @@
+{
+  "result": {
+    "record": [
+      {
+        "fun_url": "workflow-list",
+        "fun_icon": "build/img/logo_todo.png",
+        "fun_type": "todo",
+        "fun_name": "待办事项",
+        "fun_count":0
+      },
+      {
+        "fun_url": "",
+        "fun_icon": "",
+        "fun_code": "",
+        "fun_name": ""
+      },
+      {
+        "fun_url": "",
+        "fun_icon": "",
+        "fun_code": "",
+        "fun_name": ""
+      },
+      {
+        "fun_url": "workflow-list",
+        "fun_icon": "build/img/logo_done.png",
+        "fun_type": "done",
+        "fun_name": "已办事项"
+      },
+      {
+        "fun_url": "",
+        "fun_icon": "",
+        "fun_code": "",
+        "fun_name": ""
+      },
+
+      {
+        "fun_url": "",
+        "fun_icon": "",
+        "fun_code": "",
+        "fun_name": ""
+      },
+      {
+        "fun_url": "workflow-list",
+        "fun_icon": "build/img/logo_apply.png",
+        "fun_type": "apply",
+        "fun_name": "我的申请"
+      },
+      {
+        "fun_url": "setting",
+        "fun_icon": "build/img/logo_settings.png",
+        "fun_type": "setting",
+        "fun_name": "设置"
+      }
+    ],
+    "totalCount": 8
+  },
+  "success": true
+}

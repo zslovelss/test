@@ -1,0 +1,79 @@
+<style>
+  .listBack{ position: absolute; left:0; width: 40px; height: 28px;  border-radius: 5px;  margin: 4px 0 0 11px; line-height: 28px; font-size: 19px; }
+</style>
+<ion-view class="publicStyle workflow">
+  <ion-header-bar align-title="center" class="bar-stable header-title" >
+      <div class="listBack" ng-click="goBack()">
+        <!--<i class="icon ion-ios-arrow-left" style="font-size: 30px;"></i>-->
+        <img src="build/img/ios-arrow-left.png" style="width: 18px;"/>
+      </div>
+      <div class="type-list">
+        <div class="type-item" ng-if="type=='todo'" ng-class="{'active':type=='todo'}" >待办事项</div>
+        <div class="type-item" ng-if="type=='done'" ng-class="{'active':type=='done'}">已办事项</div>
+        <div class="type-item" ng-if="type=='apply'" ng-class="{'active':type=='apply'}">我的申请</div>
+      </div>
+    <!--批量操作按钮，按照需求需要，注释-->
+     <div class="operate" ng-show="type == 'todo'" ng-click="operableOrNot()">{{operable?'批量审批':'取消'}}</div>
+  </ion-header-bar>
+  <ion-content delegate-handle="workflowListHandle" ><!--style="bottom:55px"-->
+    <div class="fast-animated" ng-if="isLoadingData && !isRefreshingData">
+      <hms-loading></hms-loading>
+    </div>
+    <ion-refresher ng-if="!(isLoadingData && !isRefreshingData)" on-refresh="loadListData(true)"
+                   pulling-text="正在刷新数据..." pulling-icon="ion-ios-loop"></ion-refresher>
+    <ion-list>
+      <ion-item class="workflow-list animated fadeIn" ng-repeat="item in list">
+        <hms-workflow-list
+                           workflow-name='item.workflow_name'
+                           workflow-title='item.workflow_title'
+                           create-user-icon='item.create_user_icon'
+                           workflow-type-name-label='item.workflow_type_name_label'
+                           workflow-type-name='item.workflow_type_name'
+                           last-approve-user-name-label='item.last_approve_user_name_label'
+                           last-approve-user-name='item.last_approve_user_name'
+                           current-node-label='item.current_node_label'
+                           current-node='item.current_node'
+                           create-user-name-label='item.create_user_name_label'
+                           create-user-name='item.create_user_name'
+                           approve-status-name-label='item.approve_status_name_label'
+                           approve-status-name='item.approve_status_name'
+                           approve-date-label='item.approve_date_label'
+                           approve-date='item.approve_date'
+                           comment-text-label='item.comment_text_label'
+                           comment-text='item.comment_text'
+                           chart-status-name-label='item.chart_status_name_label'
+                           chart-status-name='item.chart_status_name'
+                           is-todo='item.is_todo'
+                           is-done='item.is_done'
+                           is-apply='item.is_apply'
+                           is-selected-img='item.selected ? "selected.png":"unselect.png"'
+                           operable='operable'
+                           instance-desc-label='item.instance_desc_label'
+                           instance-desc='item.instance_desc'
+                           instance-amount-label='item.instance_amount_label'
+                           instance-amount='item.instance_amount'
+                           ins-doc-num-label='item.ins_doc_num_label'
+                           ins-doc-num = 'item.ins_doc_num'
+                           ng-click="goDetail(item,$index)">
+        </hms-workflow-list>
+      </ion-item>
+    </ion-list>
+    <ion-infinite-scroll ng-if="canLoadMoreData" immediate-check="false"
+                         on-infinite="loadMoreListData()"></ion-infinite-scroll>
+  </ion-content>
+  <ion-footer-bar class="foot-bar" ng-if="!operable">
+    <!--<ion-scroll direction="x" scrollbar-x="false" scrollbar-y="false"
+    style="overflow-x: auto;width: 100%;height: 100%;margin: 0 65px 0 5px">
+    <div style="white-space: nowrap;line-height: 40px;text-align: center"></div>
+    </ion-scroll>
+    <div class="buttons" ng-if="operable">
+      <button class="button button-clear filter-icon" ng-click="openWorkflowFilterModal()"></button>
+      <div class="filter-text" ng-click="openWorkflowFilterModal()">筛选</div>
+    </div>-->
+    <div class="action-btn">
+      <div class="action select-all" ng-click="selectAll()">全选</div>
+      <div class="action reject" ng-click="reject()">拒绝</div>
+      <div class="action allow" ng-click="allow()">同意</div>
+    </div>
+  </ion-footer-bar>
+</ion-view>

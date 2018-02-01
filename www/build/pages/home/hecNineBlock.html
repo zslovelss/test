@@ -1,0 +1,117 @@
+<div class="hecui-nine-block-wrapper nine"
+     ng-class="{'three-line':(config.nineBlockData.length==3),'four-line':(config.nineBlockData.length==4)}">
+  <div class="hec-nine-block-container fill-parent" style="background-color: white;position: relative;top: -.3em;">
+    <style>
+      /*.hecui-nine-block-wrapper .hec-line-cell {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+        border-right: 1px solid #E4DFDF;
+        border-bottom: 1px solid #E4DFDF;
+      }*/
+      .yd-home-count-tip {
+        position: relative;
+        top: -.2rem;
+        left: -.2rem;
+      }
+      .fill-parent {
+        width: 100%;
+        height: 100%;
+      }
+      .count-waiting-tip-bg {
+        background-color: transparent !important;
+      }
+      .hecui-nine-block-wrapper .hec-nine-block {
+        display: table;
+      }
+      /*.rowWrapBR:nth-child(2n){
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+        border-bottom: 1px solid #E4DFDF;
+        padding: 20px 0px 20px 0px;
+        width: 50%;
+      }*/
+      .hecui-nine-block-wrapper.three-line .hec-line {
+        height: 33.3%;
+      }
+      .hecui-nine-block-wrapper .hec-line {
+        display: table-row;
+      }
+      .hecui-nine-block-wrapper .hec-line-cell {
+        display: table-cell;
+        vertical-align: middle;
+        text-align: center;
+        border-right: 1px solid #E4DFDF;
+        border-bottom: 1px solid #E4DFDF;
+        padding: 20px 0px 20px 0px;
+        width: 50%;
+      }
+      .hecui-nine-block-wrapper .hec-line-cell:nth-child(2n){
+        border-right:none !important;
+      }
+      .hecui-nine-block-wrapper .hec-line-cell .hec-count-tip {
+        position: absolute;
+        left: 55%;
+        top: -.6em;
+        font-size: .8em;
+        height: 1.5em;
+        width: 1.5em;
+        border-radius: 30px;
+      }
+
+      element.style {
+        background-color: #2db0ed;
+        border: 2px solid white;
+        height: 1.75em;
+        width: 1.75em;
+      }
+
+      .hecui-nine-block-wrapper .hec-line-cell .hec-count-tip {
+        position: absolute;
+        left: 55%;
+        top: -.6em;
+        font-size: .8em;
+        height: 1.5em;
+        width: 1.5em;
+        border-radius: 30px;
+      }
+      .hecui-nine-block-wrapper .hec-line-cell .count-tip-bg {
+        background-color: red;
+      }
+      img {
+        -webkit-user-drag: none;
+      }
+      .hecui-nine-block-wrapper .hec-line-cell .hec-fun-name {
+        margin-top: .2em;
+        font-size: 1em;
+      }
+      .last{
+        display: none;
+      }
+    </style>
+    <div class="hec-nine-block fill-parent">
+      <div class="row row-wrap" style="padding: 0">
+
+        <div ng-if="setLine($index)"></div>
+
+        <div  ng-repeat="cell in config.nineBlockData" class="hec-line-cell">
+          <div class="hec-9grid-cell" ng-click="goState(cell);" style="height: 60.8px;">
+            <div class="hec-icon-wrapper" style="position: relative;">
+              <div class="hec-count-tip count-tip-bg" ng-if="cell.fun_count" style="background-color: #2db0ed;border: 2px solid white;height: 1.75em;width: 1.75em;top: -12px;">
+                <span  style="color: white;top:-2px;position: relative;">{{cell.fun_count}}</span>
+              </div>
+              <img src="{{cell.fun_icon}}" style="width: 3em;" ng-if="cell.fun_icon != undefined"/>
+            </div>
+
+            <div class="hec-fun-name">
+              <span>{{cell.fun_name}}</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

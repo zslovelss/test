@@ -1,0 +1,57 @@
+<ion-modal-view class="transmit-person-modal">
+  <ion-header-bar align-title="center" class="bar-stable" style="background: #3c9bd3;">
+    <div class="transmit-search">
+      <div class="transmit-button">
+        <i class="ion-ios-search search-i"></i>
+      </div>
+      <input placeholder="搜索员工" ng-model="processInfo.transmitPersonCondition"
+             ng-change="generalUtil.searchTransmitPerson()">
+    </div>
+    <div class="buttons">
+      <button class="button button-icon icon" ng-click="generalUtil.closeTransmitPersonModal()">
+        <span class="back-text">取消</span>
+      </button>
+    </div>
+  </ion-header-bar>
+  <ion-content
+    ng-style="(processInfo.actionType==actionType.addBeforeApprover || processInfo.actionType==actionType.addAfterApprover) && {'bottom': '50px'}">
+    <!--选择转交人-->
+    <div ng-if="processInfo.actionType==actionType.toOther">
+      <hms-loading ng-if="isLoadingTransmitPerson"></hms-loading>
+      <ion-list ng-if="!isLoadingTransmitPerson">
+        <ion-item ng-repeat="person in transmitPerson" ng-click="generalUtil.selectTransmitPerson(person)">
+          <span>{{person.user_desc}}</span>
+        </ion-item>
+      </ion-list>
+      <ion-infinite-scroll ng-if="canLoadMoreData" immediate-check="false"
+                           on-infinite="generalUtil.searchMoreTransmitPerson()"></ion-infinite-scroll>
+    </div>
+    <!--添加审批人-->
+    <div
+      ng-if="processInfo.actionType==actionType.addBeforeApprover || processInfo.actionType==actionType.addAfterApprover">
+      <hms-loading ng-if="isLoadingTransmitPerson"></hms-loading>
+      <ion-list ng-if="!isLoadingTransmitPerson">
+        <ion-item ng-repeat="person in transmitPerson" ng-click="generalUtil.checkApprover(person)">
+          <span>{{person.user_desc}}</span>
+          <i class="ion-checkmark" ng-if="person.checked" style="float: right;color: #619ad5"></i>
+        </ion-item>
+      </ion-list>
+      <ion-infinite-scroll ng-if="canLoadMoreData" immediate-check="false"
+                           on-infinite="generalUtil.searchMoreTransmitPerson()"></ion-infinite-scroll>
+    </div>
+  </ion-content>
+  <ion-footer-bar class="foot-bar" style="bottom: 0"
+                  ng-if="processInfo.actionType==actionType.addBeforeApprover || processInfo.actionType==actionType.addAfterApprover">
+    <ion-scroll direction="x" scrollbar-x="false" scrollbar-y="false"
+                style="overflow-x: auto;width: 100%;height: 36px;margin: 2px 72px 2px 5px;border: 1px solid #ccc;border-radius: 3px">
+      <div style="white-space: nowrap;line-height: 34px;text-align: center;color: #999">
+        <span class="approver-desc" ng-if="processInfo.approverList.length"
+              ng-repeat="approver in processInfo.approverList"> {{approver.user_desc}} </span>
+        <span ng-if="!processInfo.approverList.length" style="color: #ccc">添加的审批人按顺序排列在此</span>
+      </div>
+    </ion-scroll>
+    <div class="buttons">
+      <button class="button button-outline button-confirm-approver" ng-click="generalUtil.confirmApprover()">确定</button>
+    </div>
+  </ion-footer-bar>
+</ion-modal-view>

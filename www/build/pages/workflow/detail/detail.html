@@ -1,0 +1,433 @@
+<style>
+	.detailBack {
+		position: absolute;
+		left: 0;
+		width: 40px;
+		height: 28px;
+		border-radius: 5px;
+		margin: 4px 0 0 11px;
+		line-height: 28px;
+		font-size: 19px;
+	}
+	
+	.detailBack1 {
+		position: absolute;
+		left: 0;
+		width: 40px;
+		height: 28px;
+		border-radius: 5px;
+		margin: 4px 0 0 11px;
+		text-align: center;
+		line-height: 28px;
+		color: #24559c;
+		font-size: 19px;
+	}
+	
+	.type-list {
+		display: flex;
+		margin: 0.15rem;
+		line-height: 27px;
+		/*border: 1px solid $workflow-bule;*/
+		border-radius: 10px;
+		overflow: auto;
+	}
+	
+	.type-item {
+		font-size: 20px;
+		text-align: center;
+		/*color: $workflow-bule;*/
+	}
+	
+	.more {
+		position: fixed;
+		right: 10px;
+		bottom: 55px;
+		width: 130px;
+		height: auto;
+		background: white;
+		z-index: 100;
+		box-shadow: 0 0 4px 3px #CACACA;
+		border-radius: 3px;
+		padding: 0 5px;
+	}
+	
+	.more-list {
+		width: 100%;
+		height: 36px;
+		line-height: 36px;
+		text-align: center;
+		color: #666666;
+		border-bottom: 1px solid #d2d2d2;
+	}
+	
+	.more-list:last-child {
+		border-bottom: none;
+	}
+	
+	.hms-list-content {
+		font-size: 13px;
+		padding-right: 10px;
+	}
+	
+	.hms-list {
+		float: left;
+		width: 50%;
+		line-height: 20px;
+		padding-bottom: 10px;
+	}
+	
+	.hms-list-key {
+		float: left;
+		width: 40%;
+		font-weight: 900;
+	}
+	
+	.hms-list-value {
+		float: left;
+		width: 60%;
+		color: #666666;
+	}
+	
+	.hms-table {
+		width: 100%;
+		font-size: 13px;
+	}
+	
+	.hms-table th,
+	.hms-table td {
+		width: 20%;
+		text-align: center;
+		border: 1px solid #F4F4F4;
+	}
+	
+	.hms-table td {
+		color: #666666;
+		padding: 5px 0;
+		line-height: 17px;
+	}
+	
+	.hms-table th {
+		padding: 10px 0;
+	}
+	
+	.hms-table-content {
+		padding-left: 0;
+		padding-right: 10px;
+	}
+	
+	.hms-table-th {
+		border-top-left-radius: 6px;
+		border-top-right-radius: 6px;
+	}
+	
+	.hms-table tr:nth-child(odd) {
+		background: #F4F4F4;
+	}
+	
+	.hms-abstract-key {
+		float: left;
+		width: 20%;
+		font-weight: 900;
+		line-height: 20px;
+	}
+	
+	.hms-abstract-value {
+		width: 80%;
+		color: #666666;
+		line-height: 20px;
+		margin-left: 20%;
+	}
+</style>
+<ion-view class="workflow-detail">
+	<ion-header-bar align-title="center" class="bar-stable header-title" style="justify-content: center;background: #3c9bd3;">
+		<div class="detailBack" ng-click="goBack()">
+			<!--<i class="icon ion-ios-arrow-left" style="font-size: 30px;"></i>-->
+			<img src="build/img/ios-arrow-left.png" style="width: 18px;" />
+		</div>
+		<div class="type-list">
+			<div class="type-item">单据详情</div>
+		</div>
+	</ion-header-bar>
+	<ion-content ng-class="{'detail-has-footer': currentDetail.can_submit=='Y'}" delegate-handle="workflowDetailHandle">
+		<div class="fast-animated fadeIn" ng-if="isLoadingData">
+			<hms-loading></hms-loading>
+		</div>
+
+		<!--工作流历史记录 固定在明细页面顶部显示-->
+		<div class="hms-workflow-history animated fadeIn" ng-if="historyDisplayMode.isFixedTop && historyList.length">
+			<div class="history-slide">
+				<i class="ion-ios-arrow-right"></i>
+			</div>
+			<div style="margin-top: 48px;width:100%;position: absolute;border-bottom: 1px solid #FAFAFA;"></div>
+			<div class="history-content">
+				<ion-scroll direction="x" scrollbar-x="false" scrollbar-y="false" ng-style="historyScrollWidth" style="height: 136px;overflow-x: auto;">
+					<div ng-style="historyWidth" style="margin-left: 15px;height: 136px;">
+						<div class="history-item" ng-repeat="history in historyList">
+							<div class="history-item-time-line" ng-bind="history.approve_date"></div>
+							<div class="history-item-node-icon" ng-click="generalUtil.showHistoryComment(history.comment_text)">
+								<img src="build/img/workflow/process-O@2x.png" />
+							</div>
+							<div class="history-item-node-name" ng-bind="history.node_name"></div>
+							<div class="history-item-employee" ng-bind="history.name"></div>
+						</div>
+					</div>
+				</ion-scroll>
+			</div>
+		</div>
+
+		<!--一维数组-->
+		<div class="hms-workflow-array animated fadeIn" ng-repeat="array in singleArrayList">
+			<div class="hms-singal-array-header">
+				<div class="hms-singal-array-name">
+					<i class="ion-record"></i>{{array.detail_title}}
+				</div>
+				<div class="hms-singal-array-operation" ng-click="generalUtil.toggleContent(array, $event)">
+					<i ng-class="{'true':'ion-ios-minus-outline','false':'ion-ios-plus-outline'}[array.showFlag]"></i>
+				</div>
+			</div>
+			<div class="hms-singal-array-content hms-list-content" ng-if="array.showFlag">
+				<!--<div class="hms-singal-array-line" ng-repeat="arrayItem in array.detail">
+					<div class="hms-singal-array-key" ng-bind="arrayItem.item_name"></div>
+					<div class="hms-singal-array-value" ng-bind="arrayItem.item_value"></div>
+				</div>-->
+				<div class="hms-list" ng-repeat="(index,arrayItem) in array.detail" ng-if="index<6">
+					<div class="hms-list-key" ng-bind="arrayItem.item_name"></div>
+					<div class="hms-list-value" ng-bind="arrayItem.item_value"></div>
+				</div>
+				<div class="hms-abstract-key" ng-bind="array.detail[6].item_name"></div>
+				<div class="hms-abstract-value" ng-if="array.detail[6].item_value!=''" ng-bind="array.detail[6].item_value"></div>
+				<div class="hms-abstract-value" ng-if="array.detail[6].item_value==''" style="visibility: hidden;">.</div>
+			</div>
+		</div>
+
+		<!--多维数组 上下页翻页形式-->
+		<div class="hms-workflow-array animated fadeIn" ng-if="multipleLinesDisplayMode.isPageUpDown" ng-repeat="array in multipleArrayList">
+			<div class="hms-multiple-array-header">
+				<div class="hms-singal-array-name">
+					<i class="ion-record"></i>{{array.title}}
+				</div>
+				<div class="hms-multiple-array-sub-header">
+					<div class="hms-singal-array-link">
+						<a class="hms-array-selector">共{{array.arrayList.length}}条</a>
+						<a class="hms-array-selector" ng-click="generalUtil.previous(array)" ng-class="{'true':'no-activated'}[array.currentPage<=1]">上一条</a>
+						<a class="hms-array-selector" ng-click="generalUtil.next(array)" ng-class="{'true':'no-activated'}[array.currentPage>=array.arrayList.length]">下一条</a>
+					</div>
+					<div class="hms-singal-array-operation" ng-click="generalUtil.toggleContent(array, $event)">
+						<i ng-class="{'true':'ion-ios-minus-outline','false':'ion-ios-plus-outline'}[array.showFlag]"></i>
+					</div>
+				</div>
+			</div>
+			<div class="hms-singal-array-content" ng-if="array.showFlag">
+				<div class="hms-singal-array-line" ng-repeat="item in array.currentArray">
+					<div class="hms-singal-array-key" ng-bind="item.line_title"></div>
+					<div class="hms-singal-array-value" ng-bind="item.line_value"></div>
+				</div>
+			</div>
+		</div>
+		<!--多维数组 滚动列表形式-->
+		<div class="hms-workflow-array animated fadeIn" ng-if="multipleLinesDisplayMode.isSlideList" ng-repeat="array in multipleArrayList">
+			<div class="hms-singal-array-header">
+				<div class="hms-singal-array-name">
+					<i class="ion-record"></i>{{array.title}}
+				</div>
+				<div class="hms-singal-array-operation" ng-click="generalUtil.toggleContent(array, $event)">
+					<i ng-class="{'true':'ion-ios-minus-outline','false':'ion-ios-plus-outline'}[array.showFlag]"></i>
+				</div>
+			</div>
+			<div class="hms-singal-array-content hms-table-content" ng-if="array.showFlag">
+				<!--<ion-scroll class="multiple-lines-scroll" direction="xy" scrollbar-x="false" scrollbar-y="false">
+					<table class="multiple-lines-table" style="width: 100%;">
+						<tr class="multiple-lines-tr-title">
+							<td ng-repeat="item in array.currentArray">
+								<span>{{item.line_title}}</span>
+							</td>
+						</tr>
+						<tr class="multiple-lines-tr-body" ng-repeat="lines in array.arrayList">
+							<td ng-repeat="line in lines.line">
+								<span ng-class="{'Y':'high-light'}[line.high_light]">{{line.line_value}}</span>
+							</td>
+						</tr>
+					</table>
+				</ion-scroll>-->
+				<table class="hms-table">
+					<tr class="hms-table-th" style="background: #EBEBEB;">
+						<th ng-repeat="item in array.currentArray">{{item.line_title}}</th>
+					</tr>
+					<tr ng-repeat="lines in array.arrayList">
+						<td ng-repeat="line in lines.line">{{line.line_value}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		<!--工作流历史记录 在打开的modal中显示-->
+		<div class="show-history-modal animated fadeIn" ng-if="historyDisplayMode.isOpenModal && historyList.length">
+			<button class="button button-light" ng-click="generalUtil.openWorkflowHistoryModal()">审批历史</button>
+		</div>
+
+		<!--附件查看-->
+		<div class="hms-workflow-array animated fadeIn" ng-if="attachmentList.length">
+			<div class="hms-singal-array-header">
+				<div class="hms-singal-array-name">
+					<i class="ion-record"></i>
+					<span>附件</span>
+					<span style="font-size: 12px;color: #999">（资源较大，请谨慎查看）</span>
+				</div>
+				<div class="hms-singal-array-operation" ng-click="generalUtil.toggleAttachmentContent($event)">
+					<i ng-class="{'true':'ion-ios-minus-outline','false':'ion-ios-plus-outline'}[attachmentShowFlag]"></i>
+				</div>
+			</div>
+			<div class="hms-singal-array-content" ng-if="attachmentShowFlag">
+				<div class="hms-singal-array-line" style="align-items: center" ng-repeat="attachment in attachmentList">
+					<div class="hms-singal-array-key attachment-name" ng-bind="attachment.attachment_name"></div>
+					<div class="hms-singal-array-value attachment-size" ng-bind="attachment.attachment_size"></div>
+					<div class="hms-singal-array-value attachment-action" ng-click="generalUtil.openUrl(attachment.attachment_url,attachment.attachment_name)">查看
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--处理意见-->
+		<div class="hms-extra-info animated fadeIn" ng-if="!isLoadingData && currentDetail.can_submit=='Y'">
+			<div class="hms-opinion">
+				<textarea id="option" placeholder="请填写处理意见" ng-model="processInfo.opinion"></textarea>
+			</div>
+		</div>
+
+	</ion-content>
+	<!--审批按钮-->
+	<div class="row hms-workflow-submit" ng-if="currentDetail.can_submit=='Y'">
+		<div class="col hms-work-approve">
+			<div class="hms-workflow-approve-content" ng-click="generalUtil.validateWorkflowAction(actionType.approve)" ng-if="currentDetail.can_approve=='Y'">
+				<i class="icon ion-checkmark-round"></i>
+				<span>同意</span>
+			</div>
+		</div>
+		<div class="col hms-workflow-reject">
+			<div class="hms-workflow-reject-content" ng-click="generalUtil.validateWorkflowAction(actionType.refuse)" ng-if="currentDetail.can_refuse=='Y'">
+				<i class="icon ion-close-round"></i>
+				<span>拒绝</span>
+			</div>
+		</div>
+		<div class="col hms-workflow-other-alias">
+			<div class="hms-workflow-other-alias-content" ng-click="showMore=!showMore">
+				<i class="icon ion-forward"></i>
+				<span style="color: #0FC542;">更多</span>
+			</div>
+		</div>
+		<div class="more" ng-if="showMore">
+			<div ng-click="generalUtil.validateWorkflowAction(actionType.toOther)" class="more-list more-list-add">转交</div>
+			<div ng-click="generalUtil.validateWorkflowAction(actionType.addBeforeApprover)" class="more-list more-list-add">添加之前的审批人</div>
+			<div ng-click="generalUtil.validateWorkflowAction(actionType.addAfterApprover)" class="more-list">添加之后的审批人</div>
+		</div>
+		<!--<div class="col hms-workflow-other-alias">-->
+		<!--<div class="hms-workflow-other-alias-content" ng-click="generalUtil.validateWorkflowAction(actionType.toOther)"-->
+		<!--ng-if="currentDetail.can_toother=='Y'">-->
+		<!--<i class="icon ion-forward"></i>-->
+		<!--<span>转交</span>-->
+		<!--</div>-->
+		<!--</div>-->
+	</div>
+</ion-view>
+
+<script id="workflow-history-modal.html" type="text/ng-template">
+	<style>
+		.platform-ios .workflow-detail {
+			margin-top: 20px;
+		}
+		
+		#workflow-history .hms-workflow-array {
+			margin-left: 48px;
+		}
+		
+		#workflow-history .hms-singal-array-header {
+			height: 32px;
+		}
+		
+		#workflow-history .hms-singal-array-header:before {
+			content: '';
+			position: absolute;
+			left: 10px;
+			width: 30px;
+			height: 30px;
+			background-image: url("build/img/workflow/process-O@2x.png");
+			background-repeat: no-repeat;
+			background-size: contain;
+		}
+		
+		#workflow-history .hms-singal-array-name {
+			height: 32px;
+			line-height: 32px;
+			font-size: 14px;
+		}
+		
+		#workflow-history .hms-singal-array-line {
+			padding-top: 6px;
+			padding-bottom: 6px;
+		}
+		
+		#workflow-history .hms-singal-array-key {
+			width: 30%;
+			font-size: 14px;
+		}
+		
+		#workflow-history .hms-singal-array-value {
+			width: 70%;
+			font-size: 14px;
+		}
+	</style>
+	<ion-modal-view id="workflow-history" class="workflow-detail">
+		<ion-header-bar align-title="center" class="bar-stable" style="background: #3c9bd3;widht:100%">
+			<h1 class="title">审批历史记录</h1>
+
+			<div class="buttons">
+				<button class="button button-icon" ng-click="generalUtil.closeWorkflowHistoryModal()">关闭</button>
+			</div>
+		</ion-header-bar>
+		<div style="position: absolute;height: 100%;margin-left: 24px;border-right: 1px solid #ccc"></div>
+		<ion-content>
+			<div class="hms-workflow-array" ng-repeat="history in historyList">
+				<div class="hms-singal-array-header">
+					<div class="hms-singal-array-name">
+						<i class="ion-record"></i>{{history.name}}
+					</div>
+				</div>
+				<div class="hms-singal-array-content">
+					<div class="hms-singal-array-line">
+						<div class="hms-singal-array-key">审批节点</div>
+						<div class="hms-singal-array-value">{{history.node_name}}</div>
+					</div>
+					<div class="hms-singal-array-line">
+						<div class="hms-singal-array-key">审批动作</div>
+						<div class="hms-singal-array-value">{{history.action_title}}</div>
+					</div>
+					<div class="hms-singal-array-line">
+						<div class="hms-singal-array-key">审批时间</div>
+						<div class="hms-singal-array-value">{{history.approve_date}}</div>
+					</div>
+					<div class="hms-singal-array-line">
+						<div class="hms-singal-array-key">审批意见</div>
+						<div class="hms-singal-array-value">{{history.comment_text}}</div>
+					</div>
+				</div>
+			</div>
+		</ion-content>
+	</ion-modal-view>
+</script>
+
+<!--<div class="hms-workflow-other">
+      <div class="hms-workflow-function" ng-class="{'true':'only'}[currentDetail.can_toother=='N']">
+        <div class="hms-work-transmit" ng-click="generalUtil.validateWorkflowAction(actionType.refuse)"
+             ng-if="currentDetail.can_refuse=='Y'">
+          拒绝
+        </div>
+        <div class="hms-work-approve" ng-click="generalUtil.validateWorkflowAction(actionType.approve)"
+             ng-if="currentDetail.can_approve=='Y'">
+          同意
+        </div>
+      </div>
+      <div class="hms-workflow-other-alias" ng-class="{'true':'only'}[currentDetail.can_refuse=='N']">
+        <div class="hms-work-transmit-alias" ng-if="currentDetail.can_refuse=='Y'">拒绝</div>
+        <div class="hms-work-approve-alias" ng-if="currentDetail.can_approve=='Y'">同意</div>
+      </div>
+    </div>-->

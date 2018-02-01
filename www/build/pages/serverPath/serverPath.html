@@ -1,0 +1,107 @@
+<style>
+  .serverPath-bg {
+    height: 100%;
+  }
+
+  .serverPath {
+    background-image: url("build/img/login_bg_bottom_img.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: bottom;
+    background-color: #017dc7;
+  }
+
+  .serverPath-form {
+    position: absolute;
+    left: 8%;
+    right: 8%;
+    top: 50px;
+    padding-top: 12%;
+    text-align: center;
+  }
+
+  .serverPath-form .serverPath-logo {
+    width: 52%;
+    margin-bottom: -20px;
+  }
+
+  .serverPath-form .input-item {
+    margin-top: 40px;
+    background-color: #ffffff;
+    height: 45px;
+    border-radius: 5px;
+  }
+
+  .serverPath-form  .icon-home {
+    width: 15%;
+    float: left;
+    padding-top: 10px;
+  }
+
+
+  .serverPath-form .icon-input {
+    width: 85%;
+    float: left;
+    padding-top: 5px;
+    padding-right: 10px;
+  }
+
+
+  .serverPath-form .button.button-positive {
+    border-color: #005780;
+    background: #005780;
+    font-size: 20px;
+    padding-top: 0;
+    width: 100%;
+    line-height: 48px;
+    border-radius: 8px;
+  }
+
+</style>
+<ion-nav-view class="serverPath-bg" hide-nav-bar="true" cache-view="false">
+
+  <ion-content scroll="false" class="serverPath">
+
+    <form class="serverPath-form">
+      <img src="build/img/login_logo.png" class="serverPath-logo">
+      <div class="input-item" style="margin-top: 70px">
+        <div style="float: left;padding-top: 11px;width: 15%;">
+          <!--<i class="icon ion-home icon-home" style="font-size: 30px;padding-top: 7px;color: #E6E6E5;"></i>-->
+          <img src="build/img/home.png"/>
+        </div>
+        <div class="icon-input">
+          <input type="text" style="width: 100%" placeholder="{{'服务器地址'}}"
+                 ng-model="serverData.baseUrl">
+        </div>
+      </div>
+      <div ng-click="showHistoryServerUrl()" style="color: white;line-height: 40px;text-align: right;margin: 5px 0 20px;">
+        <!--<i class="icon ion-ios-cloud-outline" style="font-size: 27px"></i>-->
+        <img src="build/img/cloud.png" style="width:25px"/>
+        <span style="color: #92def9">{{'历史地址' }}&nbsp;</span>
+      </div>
+      <button class="button button-positive" style="" type="submit" ng-click="goLogin()">{{'确定'}}</button>
+    </form>
+  </ion-content>
+</ion-nav-view>
+
+<script id="history-serverUrl-modal.html" type="text/ng-template">
+  <style>
+    .platform-ios .modal-backdrop .modal-wrapper .workflow-history{
+        margin-top: 20px;
+    }
+  </style>
+  <ion-modal-view id="history-serverUrl-modal" class="workflow-history">
+    <ion-header-bar align-title="center" class="bar-stable" style="background: #017dc7;widht:100%">
+      <h1 class="title">历史服务器地址记录</h1>
+      <div class="buttons">
+        <button class="button button-icon" ng-click="hideHistoryServerUrl()">关闭</button>
+      </div>
+    </ion-header-bar>
+    <ion-content>
+      <div ng-repeat="url in historyServerUrlListList" style="padding: 10px 0px 10px 30px;font-size: 19px;background: aqua;" ng-click="selectHistoryUrl(url)">
+        {{url}}
+      </div>
+    </ion-content>
+  </ion-modal-view>
+</script>
+

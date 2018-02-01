@@ -1,0 +1,41 @@
+<div class="hms-filter-bg">
+  <ion-modal-view class="hms-filter-modal">
+    <ion-header-bar align-title="center" class="bar-modal modal-height">
+      <div class="buttons modal-button-margin">
+        <button class="button button-clear" ng-click="dataFilterHandle.cancelDataFilter()">取消</button>
+      </div>
+      <h1 class="title modal-button-margin" ng-click="dataFilterHandle.clearDataFilterParams()">清空筛选</h1>
+
+      <div class="buttons modal-button-margin">
+        <button class="button button-clear" ng-click="dataFilterHandle.confirmDataFilter()">确定</button>
+      </div>
+    </ion-header-bar>
+    <ion-content overflow-scroll="true" style="overflow: hidden;top:44px!important;">
+      <div class="row no-padding hms-filter-items-row">
+        <div class="select-items">
+          <div class="data-filter-type" ng-bind="type.typeName" ng-repeat="type in filterTypeList"
+               ng-hide="(type.typeCode=='CREATE_USER' && workflowStatus.isApply) ||
+               (type.typeCode=='APPROVE_STATUS' && (workflowStatus.isTodo || workflowStatus.isApply)) ||
+               (type.typeCode=='APPROVE_DATE' && (workflowStatus.isTodo || workflowStatus.isApply)) ||
+               (type.typeCode=='CHART_STATUS' && (workflowStatus.isTodo || workflowStatus.isDone))"
+               ng-click="dataFilterHandle.selectFilterType(type)"
+               ng-class="{true: 'selected', false: 'no-selected'}[type.selected]">
+          </div>
+        </div>
+        <ion-scroll class="filter-item-list" delegate-handle="hmsFilterCondition" direction="y" overflow-scroll="false">
+          <div class="filter-item-detail row no-padding" ng-repeat="item in filterItemList"
+               ng-click="dataFilterHandle.selectFilterItem(item)"
+               ng-class="{true: 'selected', false: 'no-selected'}[item.selected]">
+            <div class="col no-padding col-67 filter-condition-item"
+                 ng-class="{true: 'selected', false: 'no-selected'}[item.selected]"
+                 ng-bind="item.itemName">
+            </div>
+            <div class="col no-padding col-33 col-center" ng-if="item.selected" style="text-align: center">
+              <i class="ion-checkmark checked"></i>
+            </div>
+          </div>
+        </ion-scroll>
+      </div>
+    </ion-content>
+  </ion-modal-view>
+</div>

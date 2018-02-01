@@ -1,0 +1,28 @@
+<style>
+  .home-main-body .fill-parent {
+    width: 100%;
+    height: 100%;
+  }
+  .top-image .fill-parent .slider-img-block{
+    width: 100%;
+    height: 20%;
+  }
+  #main-body-bottom{
+    height: 80%;
+  }
+</style>
+<ion-view view-title="{{'国都证券'}}" ng-controller="homeCtrl" hide-back-button="true" cache-view="true"
+          hide-nav-bar="true">
+    <ion-content id="home-main" scroll="false" style="background: #EFF4F7;">
+        <div class="home-main-body fill-parent">
+            <div class="top-image fill-width slider-img-block" style="height: auto">
+                <img id='bohai-logo-img' class="fill-parent" src="build/img/index_02.png"/>
+            </div>
+            <div id="main-body-bottom">
+                <hec-nine-block delegate-handle="fun-list" base-url="{{}}" nine-data-local=""
+                                from-remote="true"
+                                nine-data-remote-url=""/>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>
